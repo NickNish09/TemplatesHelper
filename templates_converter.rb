@@ -52,8 +52,13 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
         new_body = el_body.to_html.gsub(/&lt;/,"<").gsub(/&gt;/,">").gsub(/<%= javascript_include_tag (.+)/,"").gsub(/<body(.+)/,"").gsub("</body>","")
         File.open("body_#{filename}.html.erb", "w") {|f| f.write(new_body) }
     end
-    
-    new_doc = markup.to_html.gsub(/&lt;/,"<").gsub(/&gt;/,">")
+    #markup.to_html.gsub(/url\((.+)\)/) do
+    #    "url(&lt;%= #{$1} %&gt;)"
+    #end
+    new_doc = markup.to_html.gsub(/url\((.+)\)/) do
+        "url(&lt;%= asset_path #{$1} %&gt;)"
+    end.gsub(/&lt;/,"<").gsub(/&gt;/,">")
+    # .gsub("background-image: url\((.+)\).","background-image: url(&lt;% \0 %&gt;)")
     
     File.open("#{filename}.erb", "w") {|f| f.write(new_doc) }
 
