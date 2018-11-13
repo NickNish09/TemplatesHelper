@@ -59,7 +59,7 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
 
     markup.css('nav').each_with_index do |el_nav,idx|
         new_nav = el_nav.to_html.gsub(/&lt;/,"<").gsub(/&gt;/,">")
-        File.open("./navs/#{filename}_#{idx}.erb", "w") {|f| f.write(new_nav) }
+        File.open("./navs/nav_#{idx}_#{filename}.erb", "w") {|f| f.write(new_nav) }
     end
     #markup.to_html.gsub(/url\((.+)\)/) do
     #    "url(&lt;%= #{$1} %&gt;)"
