@@ -46,11 +46,20 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
         end
     end
     
-    puts "\nCole os conteúdos do arquivo body.html.erb na index.html.erb (sua página root) \n\n"
+    puts "\nCole os conteúdos do arquivo body.html.erb na index.html.erb (sua página root), o footer num layout _footer.html.erb e de render nele no application.html.erb. Mesma coisa pro _nav.html.erb \n\n"
     
     markup.css('body').each do |el_body|
         new_body = el_body.to_html.gsub(/&lt;/,"<").gsub(/&gt;/,">").gsub(/<%= javascript_include_tag (.+)/,"").gsub(/<body(.+)/,"").gsub("</body>","")
-        File.open("body_#{filename}.html.erb", "w") {|f| f.write(new_body) }
+        File.open("./bodys/#{filename}.erb", "w") {|f| f.write(new_body) }
+    end
+    markup.css('footer').each do |el_footer|
+        new_footer = el_footer.to_html.gsub(/&lt;/,"<").gsub(/&gt;/,">")
+        File.open("./footers/#{filename}.erb", "w") {|f| f.write(new_footer) }
+    end
+
+    markup.css('nav').each_with_index do |el_nav,idx|
+        new_nav = el_nav.to_html.gsub(/&lt;/,"<").gsub(/&gt;/,">")
+        File.open("./navs/#{filename}_#{idx}.erb", "w") {|f| f.write(new_nav) }
     end
     #markup.to_html.gsub(/url\((.+)\)/) do
     #    "url(&lt;%= #{$1} %&gt;)"
