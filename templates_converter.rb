@@ -3,7 +3,7 @@ require 'nokogiri'
 
 puts "Convertendo template...\n"
 
-idx = 0
+flag = true
 csstags = []
 javascripttags = []
 assetsprecompilepaths = []
@@ -25,7 +25,7 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
         href = el.get_attribute('href')
         new_el = "stylesheet_link_tag \"#{href}\"".to_s
         el.replace "&lt;%= #{new_el} %&gt;"
-        if(idx == 0)
+        if(flag)
             csstags << "<%= #{new_el} %>"
             assetsprecompilepaths << "Rails.application.config.assets.precompile += %w (#{href})"
         end
@@ -39,7 +39,7 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
             new_el = "javascript_include_tag \"#{source}\"".to_s
             el.replace "&lt;%= #{new_el} %&gt;"
             #puts "<%= #{new_el} %>"
-            if(idx == 0)
+            if(flag)
                 javascripttags << "<%= #{new_el} %>"
                 assetsprecompilepaths << "Rails.application.config.assets.precompile += %w (#{source})"
             end
@@ -49,7 +49,9 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
     puts "\nCole os conteúdos do arquivo body.html.erb na index.html.erb (sua página root), o footer num layout _footer.html.erb e de render nele no application.html.erb. Mesma coisa pro _nav.html.erb \n\n"
     
     markup.css('body').each do |el_body|
-        new_body = el_body.to_html.gsub(/&lt;/,"<").gsub(/&gt;/,">").gsub(/<%= javascript_include_tag (.+)/,"").gsub(/<body(.+)/,"").gsub("</body>","")
+        new_body = el_body.to_html.gsub(/url\((.+)\)/) do
+        "url(&lt;%= asset_path #{$1} %&gt;)"
+    end.gsub(/&lt;/,"<").gsub(/&gt;/,">").gsub(/<%= javascript_include_tag (.+)/,"").gsub(/<body(.+)/,"").gsub("</body>","")
         File.open("./bodys/#{filename}.erb", "w") {|f| f.write(new_body) }
     end
     markup.css('footer').each do |el_footer|
@@ -71,18 +73,18 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
     
     File.open("#{filename}.erb", "w") {|f| f.write(new_doc) }
 
-    idx = 1
+    # flag = false
     puts "#{filename} convertido."
 end
 
 puts "Cole isto entre as tags <head></head> do seu application.html.erb\n\n"
-puts csstags    
+puts csstags.uniq 
 puts "\n"
 puts "Cole isto no final da tag <body> do seu application.html.erb, após o <%= yield %>\n\n"
-puts javascripttags
+puts javascripttags.uniq
 puts "\n"
 puts "Cole isto no arquivo assets.rb\n\n"
-puts assetsprecompilepaths
+puts assetsprecompilepaths.uniq
 puts "Rails.application.config.assets.precompile += %w (*.jpg *.png)"
 puts "\n"
 puts "DETALHE: IGNORE TODOS OS PATHS COM HTTP/HTTPS, VOLTE ELES PARA O ORIGINAL (POR EXEMPLO SCRIPT TAG OU LINK TAG) E NAO COLOQUE ELES NO ASSETS.RB"
