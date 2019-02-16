@@ -27,7 +27,7 @@ Dir.foreach("#{Dir.pwd}/to_convert") do |filename|
         el.replace "&lt;%= #{new_el} %&gt;"
         if(flag)
             csstags << "<%= #{new_el} %>"
-            assetsprecompilepaths << "Rails.application.config.assets.precompile += %w (#{href})"
+            assetsprecompilepaths << "Rails.application.config.assets.precompile += %w(#{href})"
         end
         # puts "<%= #{new_el} %>"
     end
@@ -85,7 +85,7 @@ puts javascripttags.uniq
 puts "\n"
 puts "Cole isto no arquivo assets.rb\n\n"
 puts assetsprecompilepaths.uniq
-puts "Rails.application.config.assets.precompile += %w (*.jpg *.png)"
+puts "Rails.application.config.assets.precompile += %w(*.jpg *.png)"
 puts "\n"
-puts "DETALHE: IGNORE TODOS OS PATHS COM HTTP/HTTPS, VOLTE ELES PARA O ORIGINAL (POR EXEMPLO SCRIPT TAG OU LINK TAG) E NAO COLOQUE ELES NO ASSETS.RB"
+puts "DETALHE: IGNORE TODOS OS PATHS COM HTTP/HTTPS, VOLTE ELES PARA O ORIGINAL (POR EXEMPLO SCRIPT TAG OU LINK TAG) E NAO COLOQUE ELES NO ASSETS.RB. VERIFIQUE TODOS OS STYLESHEET_LINK_TAG DE FAVICON.ICO E TIRE"
 puts "Template convertido"
