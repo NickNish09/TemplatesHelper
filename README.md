@@ -20,8 +20,10 @@ e
 ```
 gem 'jquery-rails'
 ```
-no Gemfile
-
+no Gemfile e rode
+```
+bundle install
+```
 Mudar application.css para application.scss e importar bootstrap nele
 ```
 @import bootstrap;
